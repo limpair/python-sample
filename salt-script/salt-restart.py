@@ -14,6 +14,7 @@ SERVICES = json.loads(os.getenv("DCS_MICRO_SERVICES") or "[]")
 
 TARGET_HOME = os.getenv("TARGET_HOME", "/root")
 TMP_HOME = os.getenv("TMP_HOME", "/tmp")
+ENTRYPOINT_URL = 'http://192.168.150.72/file/demo/python-sample/salt-entrypoint.sh'
 
 assert SALT_URL, "Need SaltStack master api url"
 assert SALT_USER, "Need SaltStack username"
@@ -171,10 +172,10 @@ class DeployManager:
             for s in self.services:
                 package_target_path = self.target_path.format(
                     package_name=s.package_name)
-                get_shell_cmd = "wget http://192.168.150.72/file/demo/python-sample/salt-entrypoint.sh?token={} -O {}/entrypoint.sh".format(
+                get_shell_cmd = "wget {}?token={} -O {}/salt-entrypoint.sh".format(ENTRYPOINT_URL
                     s.token, package_target_path)
                 self.salt_client.cmd_task(n, get_shell_cmd)
-                chmod_shell_cmd = "chmod +x {}/entrypoint.sh".format(
+                chmod_shell_cmd = "chmod +x {}/salt-entrypoint.sh".format(
                     package_target_path)
                 self.salt_client.cmd_task(n, chmod_shell_cmd)
 
